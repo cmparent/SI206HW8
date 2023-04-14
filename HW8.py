@@ -109,12 +109,13 @@ def plot_rest_categories(db):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.barh(x, y)
-    ax.set_xlabel("Restaurant Categories")
-    ax.set_ylabel("Number of Restaurants")
+    ax.set_ylabel("Restaurant Categories")
+    ax.set_xlabel("Number of Restaurants")
     ax.set_title("Number of Restaurant Categories")
-    # plt.show()
+   
+    fig.tight_layout()
+    plt.show()
 
-    # print(dct)
     return dct
 
 
@@ -174,13 +175,51 @@ def get_highest_rating(db): #Do this through DB as well
         # print(row)
         buildings_ratings.append(row)
 
-    print(buildings_ratings, categories_ratings)
+    # print(buildings_ratings, categories_ratings)
 
+    rounded_b = []
+    rounded_c = []
+    for i in range(len(buildings_ratings)):
+        rounded_b.append((buildings_ratings[i][0], round(buildings_ratings[i][1], 1)))
+    
+    for i in range(len(categories_ratings)):
+         rounded_c.append((categories_ratings[i][0], round(categories_ratings[i][1], 1)))
+    
     final_lst = []
-    final_lst.append(categories_ratings[0])
-    final_lst.append(buildings_ratings[0])
+    final_lst.append(rounded_c[0])
+    final_lst.append(rounded_b[0])
 
-    # print(final_lst)
+    # lst_tups = []
+    bldng_nums = []
+    bldng_ratings = []
+    cats = []
+    cats_ratings = []
+
+    #get axes
+    for tup in rounded_b:
+        bldng_nums.append(tup[0])
+        bldng_ratings.append(tup[1])
+
+    bldng_ratings.sort()
+    
+    for tup in rounded_c:
+        cats.append(tup[0])
+        cats_ratings.append(tup[1])
+
+    #plot the graphs
+    fig, ax = plt.subplots(1, 2)
+    ax[0].bar(cats_ratings, cats)
+    ax[1].bar(bldng_ratings, bldng_nums)
+    ax[0].set_xlabel("Restaurant Categories")
+    ax[0].set_ylabel("Ratings")
+    ax[0].set_title("Restaurant Ratings vs. Categories")
+    ax[1].set_xlabel("Building Numbers")
+    ax[1].set_ylabel("Restaurant Ratings")
+    ax[1].set_title("Restaurant Ratings vs. Buildings")
+
+    fig.tight_layout(pad=1.0)   
+    plt.show()
+    
     return final_lst
 
 #Try calling your functions here
