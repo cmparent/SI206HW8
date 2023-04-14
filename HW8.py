@@ -111,7 +111,7 @@ def plot_rest_categories(db):
     ax.barh(x, y)
     ax.set_ylabel("Restaurant Categories")
     ax.set_xlabel("Number of Restaurants")
-    ax.set_title("Number of Restaurant Categories")
+    ax.set_title("Types of Restaurants on South U. Avenue")
    
     fig.tight_layout()
     plt.show()
@@ -207,15 +207,16 @@ def get_highest_rating(db): #Do this through DB as well
         cats_ratings.append(tup[1])
 
     #plot the graphs
+    # plt.figure(figsize=(8,8))
     fig, ax = plt.subplots(1, 2)
-    ax[0].bar(cats_ratings, cats)
-    ax[1].bar(bldng_ratings, bldng_nums)
-    ax[0].set_xlabel("Restaurant Categories")
-    ax[0].set_ylabel("Ratings")
-    ax[0].set_title("Restaurant Ratings vs. Categories")
-    ax[1].set_xlabel("Building Numbers")
-    ax[1].set_ylabel("Restaurant Ratings")
-    ax[1].set_title("Restaurant Ratings vs. Buildings")
+    ax[0].barh(cats, cats_ratings)
+    ax[1].barh(bldng_nums, bldng_ratings)
+    ax[0].set_ylabel("Categories")
+    ax[0].set_xlabel("Ratings")
+    ax[0].set_title("Average Restaurant Ratings by Categories")
+    ax[1].set_ylabel("Buildings")
+    ax[1].set_xlabel("Ratings")
+    ax[1].set_title("Average Restaurant Ratings by Building")
 
     fig.tight_layout(pad=1.0)   
     plt.show()
