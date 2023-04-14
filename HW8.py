@@ -111,22 +111,10 @@ def plot_rest_categories(db):
     ax.set_xlabel("Restaurant Categories")
     ax.set_ylabel("Number of Restaurants")
     ax.set_title("Number of Restaurant Categories")
-    plt.show()
-
-
-
-    
-
-
-
+    # plt.show()
 
     # print(dct)
     return dct
-
-
-
-
-
 
 
 def find_rest_in_building(building_num, db):
@@ -135,7 +123,23 @@ def find_rest_in_building(building_num, db):
     restaurant names. You need to find all the restaurant names which are in the specific building. The restaurants 
     should be sorted by their rating from highest to lowest.
     '''
-    pass
+
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db)
+    cur = conn.cursor()
+
+    cur.execute("SELECT r.name FROM restaurants r JOIN buildings b ON r.building_id = b.id WHERE b.building = ? GROUP BY r.rating ORDER BY r.rating DESC", (building_num,))
+    
+    lst_ratings = []
+
+    for row in cur:
+        # print(row)
+        for i in row:
+            lst_ratings.append(i)
+    
+    # print(lst_ratings)
+    return lst_ratings
+
 
 #EXTRA CREDIT
 def get_highest_rating(db): #Do this through DB as well
@@ -148,8 +152,33 @@ def get_highest_rating(db): #Do this through DB as well
     along the y-axis and their ratings along the x-axis in descending order (by rating).
     The second bar chart displays the buildings along the y-axis and their ratings along the x-axis 
     in descending order (by rating).
+    
     """
-    pass
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db)
+    cur = conn.cursor()
+
+    cur.execute("SELECT c.category, AVG(r.rating) FROM restaurants r JOIN categories c ON r.category_id = c.id GROUP BY c.category ORDER BY r.rating DESC")
+    
+    categories_ratings = []
+
+    for row in cur:
+        # print(row)
+        categories_ratings.append(row)
+        
+    buildings_ratings = []
+    cur.execute("SELECT b.building, AVG(r.rating) FROM buildings b JOIN restaurants r ON b.id = r.building_id GROUP BY b.building ORDER BY r.rating DESC")
+
+    for row in cur:
+        # print(row)
+        buildings_ratings.append(row)
+
+    final_lst = []
+    final_lst.append(categories_ratings[0])
+    final_lst.append(buildings_ratings[0])
+
+    # print(final_lst)
+    return final_lst
 
 #Try calling your functions here
 def main():
@@ -192,15 +221,15 @@ class TestHW8(unittest.TestCase):
         self.assertEqual(cat_data, self.cat_dict)
         self.assertEqual(len(cat_data), 14)
 
-    # def test_find_rest_in_building(self):
-    #     restaurant_list = find_rest_in_building(1140, 'South_U_Restaurants.db')
-    #     self.assertIsInstance(restaurant_list, list)
-    #     self.assertEqual(len(restaurant_list), 3)
-    #     self.assertEqual(restaurant_list[0], 'BTB Burrito')
+    def test_find_rest_in_building(self):
+        restaurant_list = find_rest_in_building(1140, 'South_U_Restaurants.db')
+        self.assertIsInstance(restaurant_list, list)
+        self.assertEqual(len(restaurant_list), 3)
+        self.assertEqual(restaurant_list[0], 'BTB Burrito')
 
-    # def test_get_highest_rating(self):
-    #     highest_rating = get_highest_rating('South_U_Restaurants.db')
-    #     self.assertEqual(highest_rating, self.highest_rating)
+    def test_get_highest_rating(self):
+        highest_rating = get_highest_rating('South_U_Restaurants.db')
+        self.assertEqual(highest_rating, self.highest_rating)
 
 if __name__ == '__main__':
     main()
