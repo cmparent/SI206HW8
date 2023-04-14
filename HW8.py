@@ -63,7 +63,8 @@ def load_rest_data(db):
                 dct[key]["category"] = category_type[i]
                 dct[key]["building"] = building_num[i]
                 dct[key]["rating"] = data[i][4]
-
+    
+    # print(dct)
     return dct
 
 
@@ -172,6 +173,8 @@ def get_highest_rating(db): #Do this through DB as well
     for row in cur:
         # print(row)
         buildings_ratings.append(row)
+
+    print(buildings_ratings, categories_ratings)
 
     final_lst = []
     final_lst.append(categories_ratings[0])
